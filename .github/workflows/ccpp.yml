@@ -13,7 +13,7 @@ jobs:
     - name: Install Dependencies (PHP vendors)
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Generate key
-      run: cd /home/runner/work/laravel/laravel/ && php artisan key:generate
+      run: cd /home/runner/work/laravel/laravel/ && php artisan key:generate && php artisan config:cache
     - name: Create DB and schemas
       run: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y mysql-server mysql-client
     - name: Execute tests (Unit and Feature tests) via PHPUnit
