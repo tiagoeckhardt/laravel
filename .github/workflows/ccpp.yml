@@ -17,7 +17,7 @@ jobs:
     - name: Create DB and schemas
       run: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y mysql-server mysql-client
     - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: vendor/bin/phpunit && composer require --dev laravel/dusk && php artisan dusk:chrome-driver
+      run: php vendor/bin/phpunit --coverage-text --colors=never && composer require --dev laravel/dusk && php artisan dusk:chrome-driver
     - name: Google Chrome
       run: google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
     - name: Execute laravel
