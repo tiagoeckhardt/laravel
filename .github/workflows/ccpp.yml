@@ -1,9 +1,8 @@
-
 language: php
-
-os:
-  - linux
-
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
 sudo: required
 dist: trusty
 
@@ -18,15 +17,15 @@ addons:
     - libboost-dev
     steps:
       - name: Test
-        on:
-             - composer install
-             - cp .env.example .env
-             - php artisan key:generate
-             - composer require --dev laravel/dusk
-             - php artisan dusk:chrome-driver
-             - cp .env.example .env
-             - mysql --user="root" --password="root" -e "CREATE DATABASE laravel;"
-             - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-             - php artisan serve &
-             - php artisan dusk
-             - php vendor/bin/phpunit --coverage-text --colors=never 
+        run:
+             composer install
+             cp .env.example .env
+             php artisan key:generate
+             composer require --dev laravel/dusk
+             php artisan dusk:chrome-driver
+             cp .env.example .env
+             mysql --user="root" --password="root" -e "CREATE DATABASE laravel;"
+             google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+             php artisan serve &
+             php artisan dusk
+             php vendor/bin/phpunit --coverage-text --colors=never 
