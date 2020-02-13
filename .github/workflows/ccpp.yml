@@ -1,4 +1,6 @@
 name: Laravel
+  operating-system: [ubuntu-latest]
+  php-versions: ['7.4']
 on:
   push:
     branches:
