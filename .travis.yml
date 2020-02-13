@@ -17,4 +17,4 @@ before_script:
   - php artisan serve &
 
 script:
-  - php artisan dusk
+  - composer require --dev laravel/dusk && php artisan dusk
