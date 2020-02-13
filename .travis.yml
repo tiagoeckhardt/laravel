@@ -14,6 +14,8 @@ install:
   - php artisan dusk:chrome-driver
 
 before_script:
+  - cp .env.example .env
+  - mysql --user="root" --password="root" -e "CREATE DATABASE my-database character set UTF8mb4 collate utf8mb4_bin;"
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - php artisan serve &
 
