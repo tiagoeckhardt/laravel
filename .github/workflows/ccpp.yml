@@ -3,30 +3,22 @@ on:
   push:
     branches:
     - master
-    - features/*
 jobs:
-  database:
-    extends:
-      service: mysql
-    laravel-tests:
+  laravel-tests:
     runs-on: ubuntu-latest
-    environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
     steps:
     - uses: actions/checkout@v1
     - name: Copy ENV Laravel Configuration for CI
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
     - name: Install Dependencies (PHP vendors)
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Generate key
       run: php artisan key:generate
     - name: Create DB and schemas
-      run: |
-        mkdir -p database
-        touch database/database.mysql
-        php artisan migrate
+      run: apt-get update && apt-get upgrade -y && apt-get install -y mysql-server mysql-client
     - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: vendor/bin/phpunit
+      run: vendor/bin/phpunit && composer require --dev laravel/dusk && php artisan dusk:chrome-driver
+    - name: Google Chrome
+      run: google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+    - name: Execute laravel
+      run: php artisan serve &
