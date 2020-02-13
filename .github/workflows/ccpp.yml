@@ -1,29 +1,23 @@
-language: php
-on: [push]
+name: Laravel
+on:
+  push:
+    branches:
+    - master
+    - features/*
 jobs:
-sudo: required
-dist: trusty
-
-services:
-  - mysql
-
-addons:
-  apt:
-    packages:
-    - mysql-server
-    - mysql-client
-    - libboost-dev
+  laravel-tests:
+    runs-on: ubuntu-latest
     steps:
-      - name: Test
-        run:
-             composer install
-             cp .env.example .env
-             php artisan key:generate
-             composer require --dev laravel/dusk
-             php artisan dusk:chrome-driver
-             cp .env.example .env
-             mysql --user="root" --password="root" -e "CREATE DATABASE laravel;"
-             google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-             php artisan serve &
-             php artisan dusk
-             php vendor/bin/phpunit --coverage-text --colors=never 
+    - uses: actions
+    - name: Copy ENV Laravel Configuration for CI
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    - name: Install Dependencies (PHP vendors)
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist && composer require --dev laravel/dusk && php artisan dusk:chrome-driver && php artisan serve && php artisan dusk && php vendor/bin/phpunit --coverage-text --colors=never 
+    - name: Generate key
+      run: php artisan key:generate
+    - name: Create DB and schemas
+      run: |
+        mkdir -p database
+        touch database/database.mysql
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      run: vendor/bin/phpunit
