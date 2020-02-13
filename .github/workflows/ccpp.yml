@@ -1,5 +1,6 @@
 language: php
 on: [push]
+jobs:
 sudo: required
 dist: trusty
 
