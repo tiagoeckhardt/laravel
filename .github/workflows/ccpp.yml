@@ -9,13 +9,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Copy ENV Laravel Configuration for CI
-      run: apt-get install php && php -r "file_exists('.env') || copy('.env.ci', '.env');"
+      run: sudo apt-get install php && php -r "file_exists('.env') || copy('.env.ci', '.env');"
     - name: Install Dependencies (PHP vendors)
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Generate key
       run: cd /home/runner/work/laravel/laravel/ && php artisan key:generate
     - name: Create DB and schemas
-      run: apt-get update && apt-get upgrade -y && apt-get install -y mysql-server mysql-client
+      run: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y mysql-server mysql-client
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit && composer require --dev laravel/dusk && php artisan dusk:chrome-driver
     - name: Google Chrome
