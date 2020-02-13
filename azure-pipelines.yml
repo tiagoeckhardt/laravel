@@ -10,7 +10,18 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  phpVersion: 7.2
+  phpVersion: 7.4
+
+steps:
+- task: MysqlDeploymentOnMachineGroup@1
+  displayName: 'Deploy Using : InlineSqlTask'
+  inputs:
+    TaskNameSelector: InlineSqlTask
+    SqlInline: |
+     CREATE DATABASE IF NOT EXISTS laravel;
+    ServerName: localhost
+    SqlUsername: root
+    SqlPassword: root
 
 steps:
 - script: |
@@ -20,7 +31,14 @@ steps:
     sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
     sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
     php -version
+    cp .env.testing .env
+    composer install --no-interaction --prefer-dist
+    php artisan key:generate
+    composer require --dev laravel/dusk
+    php artisan dusk:chrome-driver
+    google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+    php artisan serve &
+    php artisan dusk
+
   displayName: 'Use PHP version $(phpVersion)'
 
-- script: composer install --no-interaction --prefer-dist
-  displayName: 'composer install'
