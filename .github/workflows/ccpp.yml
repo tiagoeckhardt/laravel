@@ -1,48 +1,31 @@
-# GitHub Action for Laravel
-  laravel:
-    name: Laravel
-        operating-system: [ubuntu-latest]
-        php-versions: ['7.4']
-on: [push, pull_request]
-jobs:
-  database:
-    extends:
-      service: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    ports:
-      - "3306"
-    expose:
-      - "3306"
-    privileged: true
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping && test ! -f /var/lib/mysql_data/db_lock"]
-      interval: 30s
-      timeout: 5s
-      retries: 20
 
-  mysql8.0:
-    image: oroinc/mysql:${PATCH:-8.0}-${ORO_INSTALLED:-empty}
-      laravel:
-    name: Laravel
-        operating-system: [ubuntu-latest]
-        php-versions: ['7.4']
+language: php
 
+os:
+  - linux
+
+sudo: required
+dist: trusty
+
+services:
+  - mysql
+
+addons:
+  apt:
+    packages:
+    - mysql-server
+    - mysql-client
+    - libboost-dev
     steps:
-      - name: Checkout
-        run: composer install
-        cp .env.example .env
-        - php artisan key:generate
-          composer require --dev laravel/dusk
-          php artisan dusk:chrome-driver
-            - cp .env.example .env
-  - mysql --user="root" --password="root" -e "CREATE DATABASE laravel;"
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-  - php artisan serve &
-
-script:
-  - php artisan dusk
-        run: php vendor/bin/phpunit --coverage-text --colors=never 
+      - name: Test
+        run: - composer install
+             - cp .env.example .env
+             - php artisan key:generate
+             - composer require --dev laravel/dusk
+             - php artisan dusk:chrome-driver
+             - cp .env.example .env
+             - mysql --user="root" --password="root" -e "CREATE DATABASE laravel;"
+             - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+             - php artisan serve &
+             - php artisan dusk
+             - php vendor/bin/phpunit --coverage-text --colors=never 
