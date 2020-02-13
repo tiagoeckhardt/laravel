@@ -10,6 +10,7 @@ install:
   - cp .env.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
   - php artisan key:generate
+  - composer require --dev laravel/dusk
   - php artisan dusk:chrome-driver
 
 before_script:
@@ -17,4 +18,4 @@ before_script:
   - php artisan serve &
 
 script:
-  - composer require --dev laravel/dusk && php artisan dusk
+  - php artisan dusk
