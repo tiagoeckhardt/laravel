@@ -1,6 +1,4 @@
 name: Laravel
-  operating-system: [ubuntu-latest]
-  php-versions: ['7.4']
 on:
   push:
     branches:
@@ -10,6 +8,8 @@ jobs:
   database:
     extends:
       service: mysql
+    laravel-tests:
+    runs-on: ubuntu-latest
     environment:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_DATABASE: laravel
