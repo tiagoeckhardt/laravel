@@ -1,8 +1,5 @@
 language: php
 on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
 sudo: required
 dist: trusty
 
