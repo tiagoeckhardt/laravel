@@ -4,9 +4,18 @@ on:
     branches:
     - master
     - features/*
+
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
+      database:
+    extends:
+      service: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
     steps:
     - uses: actions/checkout@v1
     - name: Copy ENV Laravel Configuration for CI
