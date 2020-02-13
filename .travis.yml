@@ -1,31 +1,24 @@
-dist: trusty
-language: php
+name: CI
+on: [push]
+jobs:
 
-php:
-  - 7.1
-  - 7.2
-  - 7.3
-  - 7.4snapshot
-# - nightly
-
-# This triggers builds to run on the new TravisCI infrastructure.
-# See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
-sudo: false
-
-## Cache composer
-cache:
-  directories:
-    - $HOME/.composer/cache
-
-before_script:
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
-
-script:
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
-
-after_script:
-  - |
-    if [[ "$TRAVIS_PHP_VERSION" != 'hhvm' && "$TRAVIS_PHP_VERSION" != '7.0' ]]; then
-      wget https://scrutinizer-ci.com/ocular.phar
-      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-    fi
+  dusk-php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Prepare The Environment
+        run: cp .env.example .env
+      - name: Create Database
+        run: mysql --user="root" --password="root" -e "CREATE DATABASE my-database character set UTF8mb4 collate utf8mb4_bin;"
+      - name: Install Composer Dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: Generate Application Key
+        run: php artisan key:generate
+      - name: Upgrade Chrome Driver
+        run: php artisan dusk:chrome-driver
+      - name: Start Chrome Driver
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux &
+      - name: Run Laravel Server
+        run: php artisan serve &
+      - name: Run Dusk Tests
+        run: php artisan dusk
