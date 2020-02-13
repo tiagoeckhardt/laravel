@@ -4,10 +4,9 @@ on:
     branches:
     - master
     - features/*
-
 jobs:
-  laravel-tests:
-    runs-on: ubuntu-latest
+  database:
+    extends:
       service: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "root"
