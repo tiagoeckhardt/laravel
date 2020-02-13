@@ -18,7 +18,8 @@ addons:
     - libboost-dev
     steps:
       - name: Test
-        run: - composer install
+        script:
+             - composer install
              - cp .env.example .env
              - php artisan key:generate
              - composer require --dev laravel/dusk
