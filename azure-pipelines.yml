@@ -24,11 +24,6 @@ steps:
     SqlPassword: root
 
 - script: |
-    sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-    sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-    sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-    sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-    sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
     php -version
     cp .env.testing .env
     composer install --no-interaction --prefer-dist
@@ -38,6 +33,4 @@ steps:
     google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
     php artisan serve &
     php artisan dusk
-
-  displayName: 'Use PHP version $(phpVersion)'
 
