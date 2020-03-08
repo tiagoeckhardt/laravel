@@ -61,6 +61,8 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - [Appoly](https://www.appoly.co.uk)
 - [OP.GG](https://op.gg)
 
+[![Run on Google Cloud](https://storage.googleapis.com/cloudrun/button.svg)](https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/tiagoeckhardt/laravel.git)
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
